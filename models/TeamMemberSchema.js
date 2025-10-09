@@ -5,33 +5,41 @@ const TeamMemberSchema = new mongoose.Schema({
     type: String, 
     required: true
   },
+
   email:{
     type: String, 
     required: true,
     unique: true 
   },
+
   InstagramId:{
    type:String,
    required:true,
    unique:true
   },
+
   LinkdinId:{
    type:String,
    required:true,
    unique:true
   },
+
   Position:{
     type: String, 
     required: true 
   },
+  
   TeamName:{
       type:String,
       enum:["managment","design","contentwriting","core"],
       required:true
   },
+
   Image:{
     type:String,
   },
+  
 }, { timestamps: true });
+
 
 module.exports = mongoose.model("TeamMember", TeamMemberSchema);
