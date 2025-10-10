@@ -1,9 +1,19 @@
-
 const express=require("express");
-const router=express.Router();
+const route=express.Router();
 
-const {localFileUpload,imageUpload} =require("../controllers/fileUpload");
 
-router.post("/localFileUpload",localFileUpload);
-router.post("/imageUpload",imageUpload);
-module.exports=router;
+//image link genrator
+const {imageUpload} =require("../controllers/fileUpload");
+route.post("/imageUpload",imageUpload);
+
+//Auth
+const {generateOTP, signup, login} = require("../controllers/authController");
+route.post("/generateotp", generateOTP);
+route.post("/signup", signup);
+route.post("/login", login);
+
+//reset password 
+const {resetPasswordLink, resetPassword} =  require("../controllers/resetPassword");
+route.post("/resetpassword", resetPasswordLink);
+route.post("/resetpassword/:token", resetPassword);
+module.exports=route;
