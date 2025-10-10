@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(cors({
-    origin: "ereck-frontend.vercel.app",
+    origin: "https://ereck-frontend.vercel.app",
     methods: ["GET", "POST"],
     credentials: true
 }));
