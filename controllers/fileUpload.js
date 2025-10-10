@@ -13,7 +13,7 @@ async function uploadFileToCloudinary(file,folder,quality){
     return await cloudinary.uploader.upload(file.tempFilePath,options);
 }
 
-exports.imageUpload=async (req,res)=>{
+exports.imageUpload = async (req,res)=>{
     try{
         const {name}=req.body;
         // console.log(name);
@@ -31,7 +31,7 @@ exports.imageUpload=async (req,res)=>{
             })
         }
 
-        const response=await uploadFileToCloudinary(file,"Codehelp");
+        const response=await uploadFileToCloudinary(file,"Ereck");
         // console.log(response);
 
         const fileData=await File.create({
