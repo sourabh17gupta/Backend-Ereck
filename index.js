@@ -1,11 +1,18 @@
 const express = require("express");
 const app = express();
-
+const cors = require("cors");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.use(cors({
+    origin: "ereck-frontend.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 const fileupload=require("express-fileupload");
 app.use(fileupload({
     useTempFiles:true,
