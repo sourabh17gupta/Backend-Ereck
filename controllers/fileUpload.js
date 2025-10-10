@@ -1,26 +1,5 @@
 const File=require("../models/ImageLinks");
 const cloudinary=require("cloudinary").v2;
-
-exports.localFileUpload=async (req,res)=>{
-    try{
-       const file=req.files.file;
-
-       let path=__dirname+"/files/"+Date.now()+`.${file.name.split('.')[1]}`;
-
-       file.mv(path,(err)=>{
-        console.log(err);
-       });
-
-       res.json({
-        success:true,
-        message:"Local file uploaded successfully",
-       })
-    }catch(error){
-        console.log(error);
-
-    }
-}
-
 function isFileTypeSupported(type,supportedTypes){
     return supportedTypes.includes(type);
 }
@@ -34,7 +13,7 @@ async function uploadFileToCloudinary(file,folder,quality){
     return await cloudinary.uploader.upload(file.tempFilePath,options);
 }
 
-exports.imageUpload=async (req,res)=>{
+exports.imageUpload = async (req,res)=>{
     try{
         const {name}=req.body;
         // console.log(name);
@@ -52,7 +31,7 @@ exports.imageUpload=async (req,res)=>{
             })
         }
 
-        const response=await uploadFileToCloudinary(file,"Codehelp");
+        const response=await uploadFileToCloudinary(file,"Ereck");
         // console.log(response);
 
         const fileData=await File.create({
