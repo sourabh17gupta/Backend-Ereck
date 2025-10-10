@@ -14,13 +14,11 @@ const TeamMemberSchema = new mongoose.Schema({
 
   InstagramId:{
    type:String,
-   required:true,
-   unique:true
+   unique:true,
   },
 
   LinkdinId:{
    type:String,
-   required:true,
    unique:true
   },
 
