@@ -4,7 +4,9 @@ const uploadImage = require("../utils/imageUpload");
 
 exports.teamData = async (req, res) => {
   try {
+    console.log("hi");
     const { name, email, InstagramId, LinkdinId, Position, TeamName } = req.body;
+    console.log(email)
 
     if (!name || !email || !Position || !TeamName) {
       return res.status(400).json({
