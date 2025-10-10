@@ -16,4 +16,13 @@ route.post("/login", login);
 const {resetPasswordLink, resetPassword} =  require("../controllers/resetPassword");
 route.post("/resetpassword", resetPasswordLink);
 route.post("/resetpassword/:token", resetPassword);
+
+
+//teamData
+const {teamData}=require("../controllers/teamData");
+route.post("/teamdata",teamData)
+
+
+
+
 module.exports=route;
