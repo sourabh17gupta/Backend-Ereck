@@ -1,26 +1,5 @@
 const File=require("../models/ImageLinks");
 const cloudinary=require("cloudinary").v2;
-
-exports.localFileUpload=async (req,res)=>{
-    try{
-       const file=req.files.file;
-
-       let path=__dirname+"/files/"+Date.now()+`.${file.name.split('.')[1]}`;
-
-       file.mv(path,(err)=>{
-        console.log(err);
-       });
-
-       res.json({
-        success:true,
-        message:"Local file uploaded successfully",
-       })
-    }catch(error){
-        console.log(error);
-
-    }
-}
-
 function isFileTypeSupported(type,supportedTypes){
     return supportedTypes.includes(type);
 }
