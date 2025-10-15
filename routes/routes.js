@@ -16,4 +16,22 @@ route.post("/login", login);
 const {resetPasswordLink, resetPassword} =  require("../controllers/resetPassword");
 route.post("/resetpassword", resetPasswordLink);
 route.post("/resetpassword/:token", resetPassword);
+
+
+//teamData
+const {teamData}=require("../controllers/teamData");
+route.post("/teamdata",teamData)
+
+//contact 
+const {createContact,getAllContacts,getContactById,deleteContact}=require("../controllers/contactController");
+route.post("/createContact",createContact);
+route.get("/getAllContacts",getAllContacts);
+route.get("/getContactById",getContactById);
+route.delete("/deleteContact",deleteContact);
+
+//teamDetail
+const {createTeamDescription,getTeamDetails}=require("../controllers/teamController");
+route.post("/createTeamDescription",createTeamDescription);
+route.get("/getTeamDetails/:teamName",getTeamDetails);
+
 module.exports=route;
