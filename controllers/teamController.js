@@ -31,6 +31,7 @@ exports.createTeamDescription = async (req, res) => {
 // GET Team Details and Members by Team Name
 exports.getTeamDetails = async (req, res) => {
   try {
+    console.log("fisouhsiuohi");
     const { teamName } = req.params; // Extract teamName from URL params
     console.log("Requested team:", teamName);
 
