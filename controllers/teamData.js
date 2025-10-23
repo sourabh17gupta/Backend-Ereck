@@ -4,18 +4,17 @@ const uploadImage = require("../utils/imageUpload");
 
 exports.teamData = async (req, res) => {
   try {
-    console.log("hi");
-    const { name, email, InstagramId, LinkdinId, Position, TeamName } = req.body;
-    console.log(email,name,InstagramId,LinkdinId,Position,TeamName);
+    const { name, email, InstagramId, LinkdinId, Position, TeamName,year } = req.body;
 
-    if (!name || !email || !Position || !TeamName) {
+    if (!name || !email || !Position || !TeamName || !year) {
       return res.status(400).json({
         success: false,
         message: "Please fill all required fields",
       });
     }
 
-    const existingMember = await TeamData.findOne({ email });
+    // Use indexed email field for quick existence check
+    const existingMember = await TeamData.findOne({ email }).lean();
     if (existingMember) {
       return res.status(409).json({
         success: false,
@@ -24,7 +23,6 @@ exports.teamData = async (req, res) => {
     }
 
     const file = req.files?.Image;
-    console.log(file);
     if (!file) {
       return res.status(400).json({
         success: false,
@@ -47,7 +45,8 @@ exports.teamData = async (req, res) => {
       LinkdinId,
       Position,
       TeamName,
-      Image: urls.url
+      Image: urls.url,
+      year,
     });
 
     return res.status(200).json({
@@ -56,7 +55,6 @@ exports.teamData = async (req, res) => {
       data: response,
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -65,14 +63,30 @@ exports.teamData = async (req, res) => {
   }
 };
 
-exports.getTeam=async(req,res)=>{
-  try{
-    
-  }catch(error){
-    res.status(500).json({
-      success:false,
-      message:"Failed to get data"
-    })
-  }
-}
+// Get all members of a specific team using indexed TeamName
+exports.getTeam = async (req, res) => {
+  try {
+    const { TeamName } = req.params;
 
+    if (!TeamName) {
+      return res.status(400).json({
+        success: false,
+        message: "Team name is required",
+      });
+    }
+
+    // Indexed query for O(log n) lookup by TeamName
+    const teamMembers = await TeamData.find({ TeamName }).lean();
+
+    res.status(200).json({
+      success: true,
+      data: teamMembers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get data",
+      error: error.message,
+    });
+  }
+};
