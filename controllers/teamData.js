@@ -4,9 +4,9 @@ const uploadImage = require("../utils/imageUpload");
 
 exports.teamData = async (req, res) => {
   try {
-    const { name, email, InstagramId, LinkdinId, Position, TeamName,year } = req.body;
+    const { name, email, InstagramId, LinkdinId, Position, TeamName,Year } = req.body;
 
-    if (!name || !email || !Position || !TeamName || !year) {
+    if (!name || !email || !Position || !TeamName || !Year) {
       return res.status(400).json({
         success: false,
         message: "Please fill all required fields",
@@ -46,7 +46,7 @@ exports.teamData = async (req, res) => {
       Position,
       TeamName,
       Image: urls.url,
-      year,
+      Year,
     });
 
     return res.status(200).json({
