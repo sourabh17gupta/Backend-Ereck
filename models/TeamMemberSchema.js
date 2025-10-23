@@ -37,7 +37,7 @@ const TeamMemberSchema = new mongoose.Schema(
     Image: {
       type: String,
     },
-    year:{
+    Year:{
       type:String,
       required:true
     }
