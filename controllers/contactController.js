@@ -5,12 +5,10 @@ exports.createContact = async (req, res) => {
   try {
     const { name, email, phoneNo, message } = req.body;
 
-    // Validate required fields
     if (!name || !email || !phoneNo || !message) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    // Save contact
     const contact = await Contact.create({ name, email, phoneNo, message });
 
     res.status(201).json({
@@ -19,7 +17,6 @@ exports.createContact = async (req, res) => {
       contact,
     });
   } catch (error) {
-    // Handle duplicate email error
     if (error.code === 11000) {
       return res.status(400).json({ success: false, message: "Email already exists" });
     }
@@ -27,20 +24,22 @@ exports.createContact = async (req, res) => {
   }
 };
 
-// Get all contact messages (Admin)
+// Get all contact messages (Admin) - using index on createdAt for sorting
 exports.getAllContacts = async (req, res) => {
   try {
-    const contacts = await Contact.find().sort({ createdAt: -1 });
+    const contacts = await Contact.find()
+      .sort({ createdAt: -1 }) // uses index on createdAt if defined
+      .lean(); // returns plain JS objects for faster read
     res.status(200).json({ success: true, contacts });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to fetch contacts", error: error.message });
   }
 };
 
-// Get single contact by ID
+// Get single contact by ID - uses _id index automatically
 exports.getContactById = async (req, res) => {
   try {
-    const contact = await Contact.findById(req.params.id);
+    const contact = await Contact.findById(req.params.id).lean();
     if (!contact) {
       return res.status(404).json({ success: false, message: "Contact not found" });
     }
@@ -50,7 +49,7 @@ exports.getContactById = async (req, res) => {
   }
 };
 
-// Delete contact (Admin)
+// Delete contact (Admin) - uses _id index automatically
 exports.deleteContact = async (req, res) => {
   try {
     const contact = await Contact.findByIdAndDelete(req.params.id);

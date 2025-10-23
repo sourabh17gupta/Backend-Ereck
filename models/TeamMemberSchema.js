@@ -1,43 +1,44 @@
 const mongoose = require("mongoose");
 
-const TeamMemberSchema = new mongoose.Schema({
-  name:{ 
-    type: String, 
-    required: true
+const TeamMemberSchema = new mongoose.Schema(
+  {
+    name: { 
+      type: String, 
+      required: true,
+      index: true,
+    },
+    email: {
+      type: String, 
+      required: true,
+      unique: true,
+      index: true,
+    },
+    InstagramId: {
+      type: String,
+      unique: true,
+      index: true,
+    },
+    LinkdinId: {
+      type: String,
+      unique: true,
+      index: true,
+    },
+    Position: {
+      type: String, 
+      required: true,
+      index: true,
+    },
+    TeamName: {
+      type: String,
+      enum: ["managment", "design", "contentwriting", "core"],
+      required: true,
+      index: true,
+    },
+    Image: {
+      type: String,
+    },
   },
-
-  email:{
-    type: String, 
-    required: true,
-    unique: true 
-  },
-
-  InstagramId:{
-   type:String,
-   unique:true,
-  },
-
-  LinkdinId:{
-   type:String,
-   unique:true
-  },
-
-  Position:{
-    type: String, 
-    required: true 
-  },
-  
-  TeamName:{
-      type:String,
-      enum:["managment","design","contentwriting","core"],
-      required:true
-  },
-
-  Image:{
-    type:String,
-  },
-  
-}, { timestamps: true });
-
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("TeamMember", TeamMemberSchema);

@@ -13,6 +13,7 @@ exports.createTeamDescription = async (req, res) => {
       });
     }
 
+    // Indexed create by teamName (unique index)
     const response = await TeamDetail.create({ description, teamName });
 
     return res.status(200).json({
@@ -31,8 +32,7 @@ exports.createTeamDescription = async (req, res) => {
 // GET Team Details and Members by Team Name
 exports.getTeamDetails = async (req, res) => {
   try {
-    const { teamName } = req.params; // Extract teamName from URL params
-    console.log("Requested team:", teamName);
+    const { teamName } = req.params;
 
     if (!teamName) {
       return res.status(400).json({
@@ -41,23 +41,24 @@ exports.getTeamDetails = async (req, res) => {
       });
     }
 
-    // Get team description
-    const teamDetails = await TeamDetail.findOne({ teamName })
-    const description = teamDetails.description;
-    console.log("Team details:", teamDetails);
+    // Indexed lookup on TeamDetail.teamName
+    const teamDetails = await TeamDetail.findOne({ teamName }).lean();
+    if (!teamDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Team not found",
+      });
+    }
 
-    // Get all members belonging to that team
-    const teamMembers = await TeamMember.find({ TeamName : teamName });
-
-    // Combine and send
-    const data = {
-      description,
-      teamMembers,
-    };
+    // Indexed lookup on TeamMember.TeamName
+    const teamMembers = await TeamMember.find({ TeamName: teamName }).lean();
 
     res.status(200).json({
       success: true,
-      data,
+      data: {
+        description: teamDetails.description,
+        teamMembers,
+      },
     });
   } catch (error) {
     res.status(500).json({
