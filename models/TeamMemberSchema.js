@@ -37,6 +37,10 @@ const TeamMemberSchema = new mongoose.Schema(
     Image: {
       type: String,
     },
+    year:{
+      type:String,
+      required:true
+    }
   },
   { timestamps: true }
 );
