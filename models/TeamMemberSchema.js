@@ -10,17 +10,14 @@ const TeamMemberSchema = new mongoose.Schema(
     email: {
       type: String, 
       required: true,
-      unique: true,
       index: true,
     },
     InstagramId: {
       type: String,
-      unique: true,
       index: true,
     },
     LinkdinId: {
       type: String,
-      unique: true,
       index: true,
     },
     Position: {
