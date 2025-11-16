@@ -5,21 +5,21 @@ const TeamMemberSchema = new mongoose.Schema(
     name: { 
       type: String, 
       required: true,
-      index: true,
+      index: true, // keep index for search
     },
     email: {
       type: String, 
       required: true,
-      unique: true,
+      unique: true, // unique email
       index: true,
     },
     InstagramId: {
       type: String,
-      index: true,
+      default: null, // optional, default null
     },
     LinkdinId: {
       type: String,
-      index: true,
+      default: null, // optional, default null
     },
     Position: {
       type: String, 
@@ -36,8 +36,8 @@ const TeamMemberSchema = new mongoose.Schema(
       type: String,
     },
     Year:{
-      type:String,
-      required:true
+      type: String,
+      required: true
     }
   },
   { timestamps: true }
