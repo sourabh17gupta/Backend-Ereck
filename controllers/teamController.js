@@ -41,14 +41,7 @@ exports.getTeamDetails = async (req, res) => {
       });
     }
 
-    // Indexed lookup on TeamDetail.teamName
-    const teamDetails = await TeamDetail.findOne({ teamName }).lean();
-    if (!teamDetails) {
-      return res.status(404).json({
-        success: false,
-        message: "Team not found",
-      });
-    }
+   
 
     // Indexed lookup on TeamMember.TeamName
     const teamMembers = await TeamMember.find({ TeamName: teamName }).lean();
@@ -56,7 +49,6 @@ exports.getTeamDetails = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        description: teamDetails.description,
         teamMembers,
       },
     });
