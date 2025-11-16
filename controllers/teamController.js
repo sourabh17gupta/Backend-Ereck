@@ -1,59 +1,69 @@
-const TeamDetail = require("../models/teamDetail");
-const TeamMember = require("../models/TeamMemberSchema");
+const TeamData = require("../models/TeamMemberSchema");
+const { uploadImage } = require("../utils/imageUpload");
 
-// CREATE Team Description
-exports.createTeamDescription = async (req, res) => {
+// Add new team member
+exports.teamData = async (req, res) => {
   try {
-    const { description, teamName } = req.body;
+    const { name, email, InstagramId, LinkdinId, Position, TeamName, Year } = req.body;
 
-    if (!description || !teamName) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
+    // Validate required fields
+    if (!name || !email || !Position || !TeamName || !Year) {
+      return res.status(400).json({ success: false, message: "Please fill all required fields" });
     }
 
-    // Indexed create by teamName (unique index)
-    const response = await TeamDetail.create({ description, teamName });
+    // Check email uniqueness
+    const existingMember = await TeamData.findOne({ email }).lean();
+    if (existingMember) {
+      return res.status(409).json({ success: false, message: "Member already exists with this email" });
+    }
 
-    return res.status(200).json({
-      success: true,
-      message: "Data submitted successfully",
-      data: response,
+    // Optional: Check InstagramId uniqueness if provided
+    const instagramValue = InstagramId?.trim() || null;
+    if (instagramValue) {
+      const existingInstagram = await TeamData.findOne({ InstagramId: instagramValue }).lean();
+      if (existingInstagram) {
+        return res.status(409).json({ success: false, message: "Member already exists with this InstagramId" });
+      }
+    }
+
+    const file = req.files?.Image;
+    if (!file) {
+      return res.status(400).json({ success: false, message: "No image file uploaded" });
+    }
+
+    // Upload image to Cloudinary
+    const urls = await uploadImage(file, "Ereck");
+    if (!urls) {
+      return res.status(500).json({ success: false, message: "Image upload failed" });
+    }
+
+    // Create team member
+    const response = await TeamData.create({
+      name,
+      email,
+      InstagramId: instagramValue,
+      LinkdinId: LinkdinId?.trim() || null,
+      Position,
+      TeamName,
+      Image: urls.url,
+      Year,
     });
+
+    res.status(200).json({ success: true, message: "Data submitted successfully", data: response });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server Error: " + error.message,
-    });
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
 
-// GET Team Details and Members by Team Name
-exports.getTeamDetails = async (req, res) => {
+// Get all members of a specific team
+exports.getTeam = async (req, res) => {
   try {
-    const { teamName } = req.params;
+    const { TeamName } = req.params;
+    if (!TeamName) return res.status(400).json({ success: false, message: "Team name is required" });
 
-    if (!teamName) {
-      return res.status(400).json({
-        success: false,
-        message: "Team name is required",
-      });
-    }
-    // Indexed lookup on TeamMember.TeamName
-    const teamMembers = await TeamMember.find({ TeamName: teamName }).lean();
-
-    res.status(200).json({
-      success: true,
-      data: {
-        teamMembers,
-      },
-    });
+    const teamMembers = await TeamData.find({ TeamName }).lean();
+    res.status(200).json({ success: true, data: teamMembers });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error fetching team details",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Failed to get data", error: error.message });
   }
 };
