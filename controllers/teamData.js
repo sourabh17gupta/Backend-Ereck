@@ -1,3 +1,6 @@
+const TeamData = require("../models/TeamMemberSchema");
+const uploadImage = require("../utils/imageUpload");
+
 exports.teamData = async (req, res) => {
   try {
     const { name, email, InstagramId, LinkdinId, Position, TeamName, Year } = req.body;
@@ -9,7 +12,7 @@ exports.teamData = async (req, res) => {
       });
     }
 
-    // Check email uniqueness only
+    // Check for existing email
     const existingMember = await TeamData.findOne({ email }).lean();
     if (existingMember) {
       return res.status(409).json({
@@ -50,10 +53,37 @@ exports.teamData = async (req, res) => {
       message: "Data submitted successfully",
       data: response,
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+exports.getTeam = async (req, res) => {
+  try {
+    const { TeamName } = req.params;
+
+    if (!TeamName) {
+      return res.status(400).json({
+        success: false,
+        message: "Team name is required",
+      });
+    }
+
+    const teamMembers = await TeamData.find({ TeamName }).lean();
+
+    res.status(200).json({
+      success: true,
+      data: teamMembers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get data",
       error: error.message,
     });
   }
