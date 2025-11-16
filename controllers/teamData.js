@@ -1,10 +1,6 @@
-const mongoose = require("mongoose");
-const TeamData = require("../models/TeamMemberSchema");
-const uploadImage = require("../utils/imageUpload");
-
 exports.teamData = async (req, res) => {
   try {
-    const { name, email, InstagramId, LinkdinId, Position, TeamName,Year } = req.body;
+    const { name, email, InstagramId, LinkdinId, Position, TeamName, Year } = req.body;
 
     if (!name || !email || !Position || !TeamName || !Year) {
       return res.status(400).json({
@@ -13,7 +9,7 @@ exports.teamData = async (req, res) => {
       });
     }
 
-    // Use indexed email field for quick existence check
+    // Check email uniqueness only
     const existingMember = await TeamData.findOne({ email }).lean();
     if (existingMember) {
       return res.status(409).json({
@@ -41,8 +37,8 @@ exports.teamData = async (req, res) => {
     const response = await TeamData.create({
       name,
       email,
-      InstagramId,
-      LinkdinId,
+      InstagramId: InstagramId?.trim() || null,
+      LinkdinId: LinkdinId?.trim() || null,
       Position,
       TeamName,
       Image: urls.url,
@@ -58,34 +54,6 @@ exports.teamData = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message,
-    });
-  }
-};
-
-// Get all members of a specific team using indexed TeamName
-exports.getTeam = async (req, res) => {
-  try {
-    const { TeamName } = req.params;
-
-    if (!TeamName) {
-      return res.status(400).json({
-        success: false,
-        message: "Team name is required",
-      });
-    }
-
-    // Indexed query for O(log n) lookup by TeamName
-    const teamMembers = await TeamData.find({ TeamName }).lean();
-
-    res.status(200).json({
-      success: true,
-      data: teamMembers,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to get data",
       error: error.message,
     });
   }
