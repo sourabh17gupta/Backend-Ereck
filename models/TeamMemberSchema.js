@@ -10,15 +10,18 @@ const TeamMemberSchema = new mongoose.Schema(
     email: {
       type: String, 
       required: true,
+      unique: true, // only email must be unique
       index: true,
     },
     InstagramId: {
       type: String,
       index: true,
+      default: null, // optional field
     },
     LinkdinId: {
       type: String,
       index: true,
+      default: null, // optional field
     },
     Position: {
       type: String, 
@@ -34,9 +37,9 @@ const TeamMemberSchema = new mongoose.Schema(
     Image: {
       type: String,
     },
-    Year:{
-      type:String,
-      required:true
+    Year: {
+      type: String,
+      required: true
     }
   },
   { timestamps: true }
