@@ -1,7 +1,6 @@
 const TeamDetail = require("../models/teamDetail");
 const TeamMember = require("../models/TeamMemberSchema");
 
-// CREATE Team Description
 exports.createTeamDescription = async (req, res) => {
   try {
     const { description, teamName } = req.body;
@@ -13,7 +12,6 @@ exports.createTeamDescription = async (req, res) => {
       });
     }
 
-    // Indexed create by teamName (unique index)
     const response = await TeamDetail.create({ description, teamName });
 
     return res.status(200).json({
@@ -29,7 +27,6 @@ exports.createTeamDescription = async (req, res) => {
   }
 };
 
-// GET Team Details and Members by Team Name
 exports.getTeamDetails = async (req, res) => {
   try {
     const { teamName } = req.params;
@@ -41,7 +38,6 @@ exports.getTeamDetails = async (req, res) => {
       });
     }
 
-    // Indexed lookup on TeamMember.TeamName
     const teamMembers = await TeamMember.find({ TeamName: teamName }).lean();
 
     res.status(200).json({
