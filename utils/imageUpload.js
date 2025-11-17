@@ -1,11 +1,11 @@
 const cloudinary = require("cloudinary").v2;
 
-async function uploadImage(file, Folder){
-    return await cloudinary.uploader.upload(file.tempFilePath, {
-        resource_type: "auto",
-        folder: Folder,
-        secure: true
-    });
+async function uploadImage(file, Folder) {
+  return await cloudinary.uploader.upload(file.tempFilePath, {
+    resource_type: "auto",
+    folder: Folder,
+    secure: true, // ensures HTTPS links
+  });
 }
 
 module.exports = uploadImage;

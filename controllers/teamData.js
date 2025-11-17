@@ -5,7 +5,7 @@ exports.teamData = async (req, res) => {
   try {
     const { name, email, InstagramId, LinkdinId, Position, TeamName, Year } = req.body;
 
-    // Validate required fields
+    // required field validation
     if (!name || !email || !Position || !TeamName || !Year) {
       return res.status(400).json({
         success: false,
@@ -13,7 +13,7 @@ exports.teamData = async (req, res) => {
       });
     }
 
-    // Check for duplicate email only
+    // check duplicate email
     const existingMember = await TeamData.findOne({ email });
     if (existingMember) {
       return res.status(409).json({
@@ -22,7 +22,7 @@ exports.teamData = async (req, res) => {
       });
     }
 
-    // Check for image upload
+    // check image file
     const file = req.files?.Image;
     if (!file) {
       return res.status(400).json({
@@ -31,7 +31,7 @@ exports.teamData = async (req, res) => {
       });
     }
 
-    // Upload image
+    // upload image to Cloudinary
     const urls = await uploadImage(file, "Ereck");
     if (!urls) {
       return res.status(500).json({
@@ -40,7 +40,7 @@ exports.teamData = async (req, res) => {
       });
     }
 
-    // Create member
+    // create new team member
     const response = await TeamData.create({
       name: name.trim(),
       email: email.trim(),
@@ -48,7 +48,7 @@ exports.teamData = async (req, res) => {
       LinkdinId: LinkdinId?.trim() || null,
       Position: Position.trim(),
       TeamName: TeamName.trim(),
-      Image: urls.url,
+      Image: urls.secure_url,      // ⭐ ALWAYS HTTPS
       Year: Year.trim(),
     });
 
@@ -57,6 +57,7 @@ exports.teamData = async (req, res) => {
       message: "Data submitted successfully",
       data: response,
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
